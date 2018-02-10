@@ -22,3 +22,5 @@ TODO
 ## License
 
 MIT
+
+This code is written in C++ with python modules exposed using pybind11.

@@ -2,7 +2,7 @@ from collections import defaultdict
 from fastlda import LDA
 
 
-def load_data(path="./data/ydir.txt", min_term_occ=5):
+def load_data(path="./data/nips.txt", min_term_occ=5):
     docs, vocabulary = [], []
     term_occurrences = defaultdict(int)
     try:
@@ -22,16 +22,14 @@ def load_data(path="./data/ydir.txt", min_term_occ=5):
     return docs, vocabulary
 
 
-def train_lda(docs, V, K=50, alpha=None, beta=0.01):
-    alpha = 50./K if not alpha
+def train_lda(docs, V, K=50, alpha=1.0, beta=0.01):
     lda = LDA(docs, V, K, alpha, beta)
-    for x in range(5):
-        print(lda.calculate_perplexity())
-        lda.estimate(10)
+    lda.estimate(100, True)
     return {'topic_term_matrix': lda.getTopicTermMatrix(),
             'doc_topic_matrix': lda.getDocTopicMatrix()}
 
-def show_topic_terms(TTM, vocabulary, num_terms=15):
+
+def show_topic_terms(TTM, vocabulary, num_terms=10):
     for t in range(len(TTM)):
         s = sorted(range(len(TTM[t])), key=TTM[t].__getitem__, reverse=True)
         print("\nTopic {}\n".format(t))

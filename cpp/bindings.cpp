@@ -18,31 +18,12 @@ PYBIND11_MODULE(fastlda, m) {
         .def("getDocTopicMatrix", &LDA::getDocTopicMatrix);
 
     m.doc() = R"pbdoc(
-        Pybind11 example plugin
+        Latent Dirichlet Allocation exposed to Python
         -----------------------
-
-        .. currentmodule:: cmake_example
-
-        .. autosummary::
-           :toctree: _generate
-
-           add
-           subtract
+           estimate
+           getTopicTermMatrix
+           getDocTopicMatrix
     )pbdoc";
-    //
-    // m.def("add", &add, R"pbdoc(
-    //     Add two numbers
-    //
-    //     Some other explanation about the add function.
-    // )pbdoc");
-    //
-    // m.def("multiply", &mul, R"pbdoc(Multiplies two numbers)");
-    m.def("subtract", [](int i, int j) { return i - j; }, R"pbdoc(
-        Subtract two numbers
-
-        Some other explanation about the subtract function.
-    )pbdoc");
-
 #ifdef VERSION_INFO
     m.attr("__version__") = VERSION_INFO;
 #else

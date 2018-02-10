@@ -19,14 +19,16 @@ class LDA {
     vector<size_t> CK;
 
     default_random_engine generator;
+
  public:
     LDA(const vector<vector<size_t>> &docs,
         const size_t V, const size_t K, const float alpha, const float beta);
-   void initialize();
-   void estimate(size_t num_iterations);
-   vector<vector<float>> infer(vector<vector<size_t>> batch_docs, size_t num_iterations) const;
-   float calculate_perplexity();
+    void initialize();
+    void estimate(size_t num_iterations, bool calc_per = false);
+    vector<vector<float>> infer(vector<vector<size_t>> batch_docs,
+                                size_t num_iterations) const;
+    float calculate_perplexity();
 
-   vector<vector<float>> getTopicTermMatrix() const;
-   vector<vector<float>> getDocTopicMatrix() const;
+    vector<vector<float>> getTopicTermMatrix() const;
+    vector<vector<float>> getDocTopicMatrix() const;
 };

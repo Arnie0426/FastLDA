@@ -34,7 +34,7 @@ void LDA::initialize() {
     }
 }
 
-void LDA::estimate(size_t num_iterations) {
+void LDA::estimate(size_t num_iterations, bool calc_perp) {
     vector<float> prob_vector(K);
     for (size_t iter = 0; iter < num_iterations; ++iter) {
         cout << "Iteration " << iter << endl;
@@ -62,6 +62,11 @@ void LDA::estimate(size_t num_iterations) {
                 CDK[d][topic_id]++;
                 CKW[topic_id][term_id]++;
                 CK[topic_id]++;
+            }
+        }
+        if (calc_perp) {
+            if (iter && (iter % 10 == 0 || iter == num_iterations - 1)) {
+                cout << "Perplexity: " << calculate_perplexity() << endl;
             }
         }
     }

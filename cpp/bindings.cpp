@@ -12,7 +12,8 @@ PYBIND11_MODULE(fastlda, m) {
                       R"pbdoc(
                           Latent Dirichlet Allocation
                       )pbdoc")
-        .def("estimate", &LDA::estimate)
+        .def("estimate", &LDA::estimate, "Estimate LDA parameters",
+             py::arg("num_iterations") = 100, py::arg("calc_perp") = false)
         .def("calculate_perplexity", &LDA::calculate_perplexity)
         .def("getTopicTermMatrix", &LDA::getTopicTermMatrix)
         .def("getDocTopicMatrix", &LDA::getDocTopicMatrix);

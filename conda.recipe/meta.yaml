@@ -1,5 +1,5 @@
 package:
-  name: cmake_example
+  name: fastlda
   version: {{ environ.get('GIT_DESCRIBE_TAG', 'dev') }}
 
 build:
@@ -26,8 +26,8 @@ requirements:
 
 test:
   imports:
-    - cmake_example
+    - fastlda
 
 about:
-  summary: An example project built with pybind11.
+  summary: A minimal and fast implementation of LDA.
   license_file: LICENSE

@@ -63,7 +63,7 @@ setup(
     author_email='arnabhy@gmail.com',
     description='A minimal and fast implementation of LDA',
     long_description='',
-    ext_modules=[CMakeExtension('lda')],
+    ext_modules=[CMakeExtension('fastlda')],
     cmdclass=dict(build_ext=CMakeBuild),
     zip_safe=False,
 )

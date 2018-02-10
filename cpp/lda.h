@@ -24,7 +24,7 @@ class LDA {
     LDA(const vector<vector<size_t>> &docs,
         const size_t V, const size_t K, const float alpha, const float beta);
     void initialize();
-    void estimate(size_t num_iterations, bool calc_per = false);
+    void estimate(size_t num_iterations, bool calc_perp = false);
     vector<vector<float>> infer(vector<vector<size_t>> batch_docs,
                                 size_t num_iterations) const;
     float calculate_perplexity();

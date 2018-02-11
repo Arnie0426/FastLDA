@@ -89,61 +89,6 @@ float LDA::calculate_perplexity() {
     return exp(-log_likelihood / total_num_of_words);
 }
 
-vector<vector<float>> LDA::infer(vector<vector<size_t>> batch_docs,
-                         size_t num_iterations) const {
-
-#ifndef __APPLE__
-    static thread_local random_device rd;
-    static thread_local default_random_engine local_generator(rd());
-#else
-    static random_device rd;
-    static default_random_engine local_generator(rd());
-#endif
-    vector<vector<size_t>> cdk(batch_docs.size(), vector<size_t>(K));
-    vector<vector<float>> theta(batch_docs.size(), vector<float>(K));
-    vector<vector<size_t>> topic_indices(batch_docs.size());
-    vector<float> prob_vector(K);
-
-    // initialize counts
-    uniform_int_distribution<> uniform_topic_dist(0, K-1);
-    for (size_t d = 0; d < batch_docs.size(); ++d) {
-        size_t N = batch_docs[d].size();
-        topic_indices[d] = vector<size_t>(N);
-        for (size_t n = 0; n < N; ++n) {
-            size_t term_id = batch_docs[d][n];
-            size_t topic_id = uniform_topic_dist(local_generator);
-            cdk[d][topic_id]++;
-            topic_indices[d][n] = topic_id;
-        }
-    }
-    // infer
-    for (size_t iter = 0; iter < num_iterations; ++iter) {
-        for (size_t d = 0 ; d < batch_docs.size(); ++d) {
-            for (size_t n = 0; n < batch_docs[d].size(); ++n) {
-                size_t topic_id = topic_indices[d][n];
-                size_t term_id = batch_docs[d][n];
-
-                cdk[d][topic_id]--;
-                for (size_t k = 0; k < K; ++k) {
-                    prob_vector[k] = (cdk[d][k] + alpha)
-                        * (CKW[k][term_id] + beta) / (CK[k] + V * beta);
-                }
-                discrete_distribution<size_t> mult(prob_vector.begin(),
-                                                   prob_vector.end());
-                topic_id = mult(local_generator);
-                cdk[d][topic_id]++;
-            }
-        }
-    }
-    for (size_t d = 0; d < batch_docs.size(); ++d) {
-        size_t N = batch_docs[d].size();
-        for (size_t k = 0; k < K; ++k) {
-            theta[d][k] = (cdk[d][k] + alpha) / (N + K * alpha);
-        }
-    }
-    return theta;
-}
-
 vector<vector<float>> LDA::getDocTopicMatrix() const {
     vector<vector<float>> theta(docs.size(), vector<float> (K));
     for (size_t d = 0; d < docs.size(); ++d) {

@@ -2,6 +2,7 @@
 #include <pybind11/stl.h>
 #include <vector>
 #include "lda.h"
+#include "lda_inference.h"
 namespace py = pybind11;
 using namespace std;
 
@@ -19,12 +20,19 @@ PYBIND11_MODULE(fastlda, m) {
         .def("getDocTopicMatrix", &LDA::getDocTopicMatrix);
 
     m.doc() = R"pbdoc(
-        Latent Dirichlet Allocation exposed to Python
+        Latent Dirichlet Allocation training module exposed to Python
         -----------------------
            estimate
            getTopicTermMatrix
            getDocTopicMatrix
     )pbdoc";
+
+    py::class_<LDA_Inference>(m, "LDA_Inference")
+        .def(py::init<const vector<vector<float>> &, const float & >(),
+            "Inference module for Latent Dirichlet Allocation")
+        .def("infer", &LDA_Inference::infer,
+            "Infer latent topics for a document");
+
 #ifdef VERSION_INFO
     m.attr("__version__") = VERSION_INFO;
 #else

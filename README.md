@@ -33,8 +33,13 @@ python python/lda_example.py
 ```
 for an end-to-end LDA run (from training to inference using NIPS dataset from https://archive.ics.uci.edu/ml/datasets/bag+of+words).
 
-- [] Pypi version soon to come!
+- [ ] Pypi version soon to come!
 
+## Usage
+
+A Python class has been exposed with all the relevant training/inference functions.
+
+For a simple example, see: [Python Example](https://github.com/Arnie0426/FastLDA/blob/master/python/lda_example.py#L26-L51)
 
 ## License
 

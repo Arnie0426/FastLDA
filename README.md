@@ -17,6 +17,8 @@
 
 ## Installation
 
+### Building from source
+
 1. Fork/clone this repo.
 
 2. In fastlda/ please run
@@ -32,6 +34,8 @@ This should install all the dependencies needed.
 python python/lda_example.py
 ```
 for an end-to-end LDA run (from training to inference using NIPS dataset from https://archive.ics.uci.edu/ml/datasets/bag+of+words).
+
+### Alternatives
 
 - [ ] Pypi version soon to come!
 

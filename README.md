@@ -21,6 +21,8 @@
 
 2. In fastlda/ please run
 ```bash
+git submodule init
+git submodule update
 pip install --upgrade .
 ```
 This should install all the dependencies needed.
@@ -31,7 +33,7 @@ python python/lda_example.py
 ```
 for an end-to-end LDA run (from training to inference using NIPS dataset from https://archive.ics.uci.edu/ml/datasets/bag+of+words).
 
-[] Pypi version soon to come!
+- [] Pypi version soon to come!
 
 
 ## License

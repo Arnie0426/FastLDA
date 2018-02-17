@@ -1,6 +1,6 @@
 package:
   name: fastlda
-  version: {{ environ.get('GIT_DESCRIBE_TAG', 'dev') }}
+  version: 0.0.1
 
 build:
   number: {{ environ.get('GIT_DESCRIBE_NUMBER', 0) }}
@@ -30,4 +30,5 @@ test:
 
 about:
   summary: A minimal and fast implementation of LDA.
+  license: MIT
   license_file: LICENSE

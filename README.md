@@ -17,7 +17,20 @@
 
 ## Installation
 
-TODO
+1. Fork/clone this repo.
+
+2. In fastlda/ 
+```bash
+2. pip install --upgrade .
+```
+should install all the dependencies needed.
+
+3. Run
+```bash
+python python/lda_example.py
+```
+for an end-to-end LDA run (from training to inference using NIPS dataset from https://archive.ics.uci.edu/ml/datasets/bag+of+words).
+
 
 ## License
 

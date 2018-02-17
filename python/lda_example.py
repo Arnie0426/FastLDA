@@ -42,6 +42,7 @@ def main():
     print(["(Top {} : {})".format(w, topics[w]) for w in s[:10]])
     # Save topic terms to file
     lda.save_topic_terms()
+    print("Topic Terms file saved to ./data/topic_terms.txt")
 
     # Load model from scratch from file
     lda = LatentDirichletAllocation(model_path="./data/ttm.mat")

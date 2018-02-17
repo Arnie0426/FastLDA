@@ -23,11 +23,15 @@ def load_data(path="./data/nips.txt", min_term_occ=5):
 
 
 def main():
+    print("Loading NIPS dataset.")
     docs, vocabulary = load_data()
+    print("NIPS dataset loaded.")
     # test training
     lda = LatentDirichletAllocation()
-    lda.train(docs=docs, vocabulary=vocabulary)
+    print("Initialized LDA. Estimating parameters with 50 iterations.")
+    lda.train(docs=docs, vocabulary=vocabulary, num_iterations=50)
     lda.save_parameters()
+    print("Saved LDA Parameters.")
     # test inference model after training
     topics = lda.infer_doc(docs[0])
     s = sorted(range(len(topics)), key=topics.__getitem__, reverse=True)

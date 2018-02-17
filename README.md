@@ -39,7 +39,7 @@ for an end-to-end LDA run (from training to inference using NIPS dataset from ht
 
 A Python class has been exposed with all the relevant training/inference functions.
 
-For a simple example, see: [Python Example](https://github.com/Arnie0426/FastLDA/blob/master/python/lda_example.py#L26-L51)
+For a simple example, see: [this simple example](https://github.com/Arnie0426/FastLDA/blob/master/python/lda_example.py#L26-L51)
 
 ## License
 

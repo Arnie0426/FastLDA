@@ -25,6 +25,12 @@ class LDA {
 
     default_random_engine generator;
 
+    template<class T>
+    static vector<vector<T>> build2dvector(int x, int y)
+    {
+        return vector<vector<T>>(x, vector<T>(y));
+    }
+
  public:
     LDA(const vector<vector<size_t>> &docs,
         const size_t V, const size_t K, const float alpha, const float beta);

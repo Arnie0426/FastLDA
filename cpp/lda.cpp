@@ -15,11 +15,11 @@ LDA::LDA(const vector<vector<size_t>> &&docs, const size_t V,
              // can simplify these constructor calls quite a bit here, see (2) in http://en.cppreference.com/w/cpp/container/vector/vector.
              /// Also, since these are quite complex vectors, I would create some static private member functions and delegate. They could
              // also very naturally take on some of the work of initialize()
-             Z(buildZvector(docs.size()),
+             Z(build2dvector<size_t>(docs.size(), 0),
              // picky: if you're "using namespace std", then you don't need the std prefixes. I actually prefer no "using" statement and 
              // prefixed, but do one or the other
-             CDK(docs.size(), std::vector<size_t>(K)),
-             CKW(K, std::vector<size_t>(V)),
+             CDK(build2dvector<size_t>(docs.size(), K)),
+             CKW(build2dvector<size_t>(K, V)),
              CK(vector<size_t> (K)), total_num_of_words(0) {
     initialize();
 }
@@ -117,13 +117,6 @@ vector<vector<float>> LDA::getDocTopicMatrix() const {
         }
     }
     return theta;
-}
-
-// this is what you need
-template<class T>
-vector<vector<T>> build2dvector(int x, int y)
-{
-    return vector<vector<T>>(x, vector<T>(y));
 }
 
 vector<vector<float>> LDA::getTopicTermMatrix() const {

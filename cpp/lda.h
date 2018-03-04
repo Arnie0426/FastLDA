@@ -2,11 +2,16 @@
 #include <random>
 #include <string>
 #include <vector>
+// using namespace in header files is poor practice, since it affects the use of namespaces in client code that #includes your header. 
+// Doing this in cpp files is normal, since then it will only apply to the single file
 using namespace std;
 
 class LDA {
  private:
-    vector<vector<size_t>> docs;
+    // c++ convention uses _ prefix on member variables
+    // Note that this vector is copied in the constructor. I think you want this to be a reference, just make sure it never ends up dangling.
+    // everything that can be const should be
+    const vector<vector<size_t>>& docs; // this should probaly be a const reference
     size_t K;
     size_t V;
     float alpha;

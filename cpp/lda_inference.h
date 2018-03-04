@@ -4,7 +4,7 @@ using namespace std;
 
 class LDA_Inference {
  private:
-    vector<vector<float>> topic_term_matrix;
+    const vector<vector<float>>& topic_term_matrix;
     size_t K;
     float alpha;
 

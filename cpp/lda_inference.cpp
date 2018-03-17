@@ -6,6 +6,7 @@
 
 LDA_Inference::LDA_Inference(const vector<vector<float>> &topic_term_matrix,
                              const float alpha) :
+                             // again note that as your code stands, you are copying data here, probably needlessly
                                  topic_term_matrix(topic_term_matrix),
                                  alpha(alpha),
                                  K(topic_term_matrix.size()) {
@@ -23,22 +24,24 @@ vector<float> LDA_Inference::infer(const vector<size_t> &doc,
     static default_random_engine local_generator(rd());
 #endif
 
-    size_t N = doc.size();
-    vector<size_t> cdk(K);
-    vector<float> prob_vector(K);
-    vector<size_t> topic_indices(N);
+    auto N = doc.size();
+    auto cdk = vector<size_t>(K);
+    auto prob_vector = vector<float>(K);
+    auto topic_indices = vector<size_t>(N);
 
     // initialize counts
-    uniform_int_distribution<> uniform_topic_dist(0, K-1);
-    for (size_t n = 0; n < N; ++n) {
-        size_t term_id = doc[n];
-        size_t topic_id = uniform_topic_dist(local_generator);
+    auto uniform_topic_dist = uniform_int_distribution<>(0, K-1);
+    // std::transform populating topic_indices and the lamdba to transform taking cdk by reference so it can update that too
+    for (auto n = 0; n < N; ++n) {
+        auto term_id = doc[n];
+        auto topic_id = uniform_topic_dist(local_generator);
         cdk[topic_id]++;
         topic_indices[n] = topic_id;
     }
 
     // infer topics for document
     for (size_t iter = 0; iter < num_iterations; ++iter) {
+        // you can probably use a HOF here too, see http://en.cppreference.com/w/cpp/algorithm 
         for (size_t n = 0; n < N; ++n) {
             size_t topic_id = topic_indices[n];
             size_t term_id = doc[n];
@@ -57,10 +60,12 @@ vector<float> LDA_Inference::infer(const vector<size_t> &doc,
     }
     // compute true probability vector
     float sum = 0.0;
+    // std::accumulate is your friend
     for (size_t k = 0; k < K; ++k) {
         prob_vector[k] = cdk[k] + alpha;
         sum += prob_vector[k];
     }
+    // std::accumulate here too
     for_each(prob_vector.begin(), prob_vector.end(),
             [&sum](float &p) { p /= sum; });
     return prob_vector;

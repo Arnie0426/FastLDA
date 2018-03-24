@@ -4,9 +4,9 @@
 #include <vector>
 #include <utility>
 
-#include "alias_table.cpp"
+#include "alias_table.h"
 
-AliasTable::AliasTable(const vector<float> prob) {
+AliasTable::AliasTable(const vector<float> &prob) {
     size_t dim = prob.size();
     float norm = std::accumulate(prob.begin(), prob.end(), 0.0);
     vector<float> scaled_prob(dim);
@@ -31,13 +31,13 @@ AliasTable::AliasTable(const vector<float> prob) {
         poor.pop_back();
 
         main_table.push_back(p);
-        alias_table.push_back(r[1]);
+        alias_table.push_back(r.second);
 
-        float rem_weight = (p[0] + r[0]) - 1.0;
+        float rem_weight = (p.first + r.first) - 1.0;
         if (rem_weight < 1) {
-            poor.push_back(make_pair(rem_weight, r[1]));
+            poor.push_back(make_pair(rem_weight, r.second));
         } else {
-            rich.push_back(make_pair(rem_weight, r[1]));
+            rich.push_back(make_pair(rem_weight, r.second));
         }
     }
 
@@ -45,15 +45,41 @@ AliasTable::AliasTable(const vector<float> prob) {
     while (!rich.empty()) {
         pair<float, size_t> r = rich.back();
         rich.pop_back();
-        main_table.push_back(make_pair(1.0, r[1]));
+        main_table.push_back(make_pair(1.0, r.second));
         alias_table.push_back(-1);
     }
 
     while (!poor.empty()) {
         pair<float, size_t> p = poor.back();
         poor.pop_back();
-        main_table.push_back(make_pair(1.0, p[1]));
+        main_table.push_back(make_pair(1.0, p.second));
         alias_table.push_back(-1);
     }
 
+}
+
+size_t AliasTable::get_alias_sample(default_random_engine generator) const {
+    if (main_table.empty()) {
+        // Error
+        return std::numeric_limits<size_t>::max();
+    }
+    size_t dim = main_table.size();
+    uniform_real_distribution<float> u01(0, 1);
+    uniform_int_distribution<> uniform_table(0, dim - 1);
+
+    // roll dice
+    size_t k = uniform_table(generator);
+    if (alias_table[k] == -1) {
+        return main_table[k].second;
+    }
+
+    pair<float, size_t> cell = main_table[k];
+
+    // flip coin
+    float coin = u01(generator);
+    if (coin <= cell.first) {
+        return cell.second;
+    } else {
+        return alias_table[k];
+    }
 }

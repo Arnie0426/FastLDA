@@ -60,7 +60,15 @@ AliasTable::AliasTable(const vector<float> &prob) {
     }
 }
 
-size_t AliasTable::get_alias_sample(default_random_engine generator) const {
+size_t AliasTable::get_alias_sample() const {
+#ifndef __APPLE__
+    static thread_local random_device rd;
+    static thread_local default_random_engine generator(rd());
+#else
+    static random_device rd;
+    static default_random_engine generator(rd());
+#endif
+
     if (main_table.empty()) {
         // Error
         return std::numeric_limits<size_t>::max();

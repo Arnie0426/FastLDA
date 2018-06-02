@@ -19,6 +19,8 @@ LDA::LDA(const vector<vector<size_t>> &docs, const size_t V,
 }
 
 void LDA::initialize() {
+    random_device rd;
+    default_random_engine generator(rd());
     uniform_int_distribution<> uniform_topic_dist(0, K-1);
     for (size_t d = 0; d < docs.size(); ++d) {
         size_t N = docs[d].size();

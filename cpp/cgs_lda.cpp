@@ -47,4 +47,4 @@ void CGS_LDA::estimate(size_t num_iterations, bool calc_perp) {
         }
     }
 }
-}  // fastlda
+}  // namespace fastlda

@@ -73,4 +73,4 @@ vector<vector<float>> LDA::getTopicTermMatrix() const {
     }
     return phi;
 }
-}
+}  // namespace fastlda

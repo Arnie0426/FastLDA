@@ -1,7 +1,7 @@
 // Copyright 2018 Arnab Bhadury
 
-#ifndef CPP_COMMON_H
-#define CPP_COMMON_H
+#ifndef CPP_COMMON_H_
+#define CPP_COMMON_H_
 
 #include <algorithm>
 #include <iostream>
@@ -23,4 +23,4 @@ namespace fastlda {
   using std::pair;
   using std::make_pair;
 }  // namespace fastlda
-#endif  /* CPP_COMMON_H */
+#endif  // CPP_COMMON_H_

@@ -10,9 +10,12 @@ def _load_mat_from_file(path, delimitter="\t"):
 
 class LatentDirichletAllocation(object):
     '''Python wrapper around the C++ modules'''
+
     def __init__(self, model_path=None, alpha=1.0):
-        self.topic_term_matrix = [] if not model_path else _load_mat_from_file(model_path)
-        self.num_topics = len(self.topic_term_matrix) if self.topic_term_matrix else None
+        self.topic_term_matrix = [
+        ] if not model_path else _load_mat_from_file(model_path)
+        self.num_topics = len(
+            self.topic_term_matrix) if self.topic_term_matrix else None
         self.inf_model = None if not self.topic_term_matrix else \
             fastlda.LDA_Inference(self.topic_term_matrix, alpha)
         self.alpha = alpha
@@ -51,7 +54,7 @@ class LatentDirichletAllocation(object):
                 s = sorted(range(len(row)), key=row.__getitem__, reverse=True)
                 topic_term_file.write("Topic {}: ".format(t))
                 topic_term_file.write(", ".join([self.vocabulary[w]
-                                      for w in s[:num_terms]]))
+                                                 for w in s[:num_terms]]))
                 topic_term_file.write("\n\n")
 
     def infer_doc(self, doc, num_iterations=50):

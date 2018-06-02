@@ -32,6 +32,7 @@ def main():
     lda.train(docs=docs, vocabulary=vocabulary, num_iterations=50)
     lda.save_parameters()
     print("Saved LDA Parameters.")
+
     # test inference model after training
     topics = lda.infer_doc(docs[0])
     s = sorted(range(len(topics)), key=topics.__getitem__, reverse=True)

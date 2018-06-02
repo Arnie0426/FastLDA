@@ -1,11 +1,13 @@
+// Copyright 2018 Arnab Bhadury
 #include <iostream>
 #include <cmath>
 #include <random>
 #include <string>
 #include <vector>
 
-#include "lda.h"
+#include "cpp/lda.h"
 
+namespace fastlda {
 LDA::LDA(const vector<vector<size_t>> &docs, const size_t V,
          const size_t K, const float alpha, const float beta) : docs(docs),
              K(K), alpha(alpha), beta(beta), V(V),
@@ -108,4 +110,5 @@ vector<vector<float>> LDA::getTopicTermMatrix() const {
         }
     }
     return phi;
+}
 }

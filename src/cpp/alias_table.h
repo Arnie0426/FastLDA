@@ -1,6 +1,6 @@
 // Copyright 2018 Arnab Bhadury
-#ifndef CPP_ALIAS_TABLE_H_
-#define CPP_ALIAS_TABLE_H_
+#ifndef SRC_CPP_ALIAS_TABLE_H_
+#define SRC_CPP_ALIAS_TABLE_H_
 
 #include <algorithm>
 #include <vector>
@@ -19,4 +19,4 @@ class AliasTable {
     vector<size_t> aliasTable_;
 };
 }  // namespace fastlda
-#endif  // CPP_ALIAS_TABLE_H_
+#endif  // SRC_CPP_ALIAS_TABLE_H_

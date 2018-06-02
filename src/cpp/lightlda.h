@@ -1,6 +1,6 @@
 // Copyright 2018 Arnab Bhadury
-#ifndef CPP_LIGHTLDA_H_
-#define CPP_LIGHTLDA_H_
+#ifndef SRC_CPP_LIGHTLDA_H_
+#define SRC_CPP_LIGHTLDA_H_
 
 #include <vector>
 
@@ -29,4 +29,4 @@ class LightLDA : public LDA {
     uniform_real_distribution<float> u01;
 };
 }  // namespace fastlda
-#endif  // CPP_LIGHTLDA_H_
+#endif  // SRC_CPP_LIGHTLDA_H_

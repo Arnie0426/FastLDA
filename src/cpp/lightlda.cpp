@@ -85,7 +85,7 @@ void LightLDA::estimate(size_t numIterations, size_t numMHSteps,
                     uniform_int_distribution<> coin(0, 1);  // coin flip
                     auto proposal = coin(generator);
                     if (proposal == 0) {
-                        float u = u01(generator) * (N - 1 + numTopics_ * alpha_);
+                        float u = u01(generator) * (N-1 + numTopics_ * alpha_);
                         if (u < N - 1) {
                             size_t index = docDist(generator);
                             proposedTopic = Z[d][index];
@@ -115,7 +115,8 @@ void LightLDA::estimate(size_t numIterations, size_t numMHSteps,
                             proposedTopic = betaSamples[sampleCounts[vocSize_]];
                             sampleCounts[vocSize_]++;
                         } else {
-                            proposedTopic = termSamples[termId][sampleCounts[termId]];
+                            auto sample = sampleCounts[termId];
+                            proposedTopic = termSamples[termId][sample];
                             sampleCounts[termId]++;
                         }
                         accept = (CDK[d][proposedTopic] + alpha_)
@@ -135,7 +136,8 @@ void LightLDA::estimate(size_t numIterations, size_t numMHSteps,
                     } else {
                         acceptCount++;
                         betaSum -= (beta_ / (CK[topicId] + vocSize_ * beta_));
-                        betaSum += (beta_ / (CK[proposedTopic] + vocSize_ * beta_));
+                        betaSum += (beta_
+                                    / (CK[proposedTopic] + vocSize_ * beta_));
                         termSum -= (CKW[topicId][termId]
                                    / (CK[topicId] + vocSize_ * beta_));
                         termSum += (CKW[proposedTopic][termId]

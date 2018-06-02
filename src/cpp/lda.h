@@ -1,6 +1,6 @@
 // Copyright 2018 Arnab Bhadury
-#ifndef CPP_LDA_H_
-#define CPP_LDA_H_
+#ifndef SRC_CPP_LDA_H_
+#define SRC_CPP_LDA_H_
 #include <iostream>
 #include <random>
 #include <string>
@@ -23,7 +23,7 @@ class LDA {
     vector<size_t> CK;
 
  public:
-    LDA(const vector<vector<size_t>> &docs, const size_t V, 
+    LDA(const vector<vector<size_t>> &docs, const size_t V,
         const size_t K, const float alpha, const float beta);
     void initialize();
     virtual void estimate(size_t numIterations, bool calcPerp) { }
@@ -32,4 +32,4 @@ class LDA {
     vector<vector<float>> getDocTopicMatrix() const;
 };
 }  // namespace fastlda
-#endif  // CPP_LDA_H_
+#endif  // SRC_CPP_LDA_H_

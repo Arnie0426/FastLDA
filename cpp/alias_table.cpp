@@ -1,4 +1,5 @@
 // Copyright 2018 Arnab Bhadury
+
 #include <limits>
 #include <random>
 #include <numeric>
@@ -51,6 +52,7 @@ AliasTable::AliasTable(const vector<float> &prob) {
         main_table.push_back(make_pair(1.0, r.second));
         alias_table.push_back(-1);
     }
+
     while (!poor.empty()) {
         pair<float, size_t> p = poor.back();
         poor.pop_back();

@@ -6,7 +6,6 @@
 #include <vector>
 
 #include "cpp/common.h"
-
 namespace fastlda {
   class LDA {
    protected:

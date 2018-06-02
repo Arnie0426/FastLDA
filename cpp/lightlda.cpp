@@ -140,4 +140,4 @@ void LightLDA::estimate(size_t num_iterations, size_t num_mh_steps, bool calc_pe
 
     }
 }
-}
+}  // fastlda

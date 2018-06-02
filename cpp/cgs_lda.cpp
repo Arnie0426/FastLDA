@@ -1,9 +1,13 @@
-// Copyright 3018 Arnab Bhadury
+// Copyright 2018 Arnab Bhadury
+#include <vector>
+#include <random>
+
 #include "cpp/cgs_lda.h"
 
 namespace fastlda {
 CGS_LDA::CGS_LDA(const vector<vector<size_t>> &docs, const size_t V,
-         const size_t K, const float alpha, const float beta) : LDA(docs, V, K, alpha, beta) {
+         const size_t K, const float alpha, const float beta)
+            : LDA(docs, V, K, alpha, beta) {
 }
 
 void CGS_LDA::estimate(size_t num_iterations, bool calc_perp) {

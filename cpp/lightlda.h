@@ -6,7 +6,7 @@
 #include "cpp/alias_table.h"
 
 namespace fastlda {
-  class LightLDA : public LDA {
+class LightLDA : public LDA {
    public:
       LightLDA(const vector<vector<size_t>> &docs, const size_t V,
                const size_t K, const float alpha, const float beta);
@@ -25,5 +25,5 @@ namespace fastlda {
       uniform_int_distribution<> uniform_topic;
       uniform_real_distribution<float> u01;
   };
-}
+}  // fastlda
 #endif  /* CPP_LIGHTLDA_H */

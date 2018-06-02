@@ -2,8 +2,9 @@
 #ifndef CPP_CGS_LDA_H
 #define CPP_CGS_LDA_H
 
-#include "cpp/lda.h"
+#include <vector>
 
+#include "cpp/lda.h"
 namespace fastlda {
   class CGS_LDA : public LDA {
    public:
@@ -11,5 +12,5 @@ namespace fastlda {
              const size_t K, const float alpha, const float beta);
       void estimate(size_t num_iterations, bool calc_perp);
   };
-}  // namespace fastlda
+}  // fastlda
 #endif  /* CPP_CGS_LDA_H */

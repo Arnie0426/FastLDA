@@ -29,7 +29,7 @@ def main():
     # test training
     lda = LatentDirichletAllocation()
     print("Initialized LDA. Estimating parameters with 50 iterations.")
-    lda.train(docs=docs, vocabulary=vocabulary, num_iterations=30)
+    lda.train(docs=docs, vocabulary=vocabulary, num_iterations=50)
     lda.save_parameters()
     print("Saved LDA Parameters.")
 

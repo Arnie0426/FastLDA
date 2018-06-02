@@ -5,7 +5,7 @@
 using namespace std;
 
 class LDA {
- private:
+ protected:
     vector<vector<size_t>> docs;
     size_t K;
     size_t V;
@@ -24,7 +24,7 @@ class LDA {
     LDA(const vector<vector<size_t>> &docs,
         const size_t V, const size_t K, const float alpha, const float beta);
     void initialize();
-    void estimate(size_t num_iterations, bool calc_perp);
+    virtual void estimate(size_t num_iterations, bool calc_perp);
     float calculate_perplexity();
     vector<vector<float>> getTopicTermMatrix() const;
     vector<vector<float>> getDocTopicMatrix() const;

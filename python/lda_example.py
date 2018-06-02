@@ -29,9 +29,10 @@ def main():
     # test training
     lda = LatentDirichletAllocation()
     print("Initialized LDA. Estimating parameters with 50 iterations.")
-    lda.train(docs=docs, vocabulary=vocabulary, num_iterations=50)
+    lda.train(docs=docs, vocabulary=vocabulary, num_iterations=30)
     lda.save_parameters()
     print("Saved LDA Parameters.")
+
     # test inference model after training
     topics = lda.infer_doc(docs[0])
     s = sorted(range(len(topics)), key=topics.__getitem__, reverse=True)

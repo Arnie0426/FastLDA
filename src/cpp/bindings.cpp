@@ -1,8 +1,10 @@
 // Copyright 2018 Arnab Bhadury
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
+#include <random>
 #include <vector>
 
+#include "cpp/alias_table.h"
 #include "cpp/cgs_lda.h"
 #include "cpp/lda_inference.h"
 #include "cpp/lightlda.h"
@@ -10,6 +12,7 @@
 namespace py = pybind11;
 
 namespace fastlda {
+
 PYBIND11_MODULE(fastlda, m) {
     py::class_<CGS_LDA>(m, "CGS_LDA")
        .def(py::init<const vector<vector<size_t>> &, const size_t &,
@@ -44,11 +47,10 @@ PYBIND11_MODULE(fastlda, m) {
         .def("infer", &LDAInference::infer,
             "Infer latent topics for a document");
 
-    py::class_<LDA_Inference>(m, "LDA_Inference")
-        .def(py::init<const vector<vector<float>> &, const float & >(),
-            "Inference module for Latent Dirichlet Allocation")
-        .def("infer", &LDA_Inference::infer,
-            "Infer latent topics for a document");
+    py::class_<AliasTable>(m, "AliasTable")
+        .def(py::init<const vector<float> &>(),
+            "Alias Table module")
+        .def("get_alias_sample", &AliasTable::get_alias_sample);
 
 #ifdef VERSION_INFO
     m.attr("__version__") = VERSION_INFO;

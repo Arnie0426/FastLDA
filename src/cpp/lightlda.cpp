@@ -34,7 +34,7 @@ void LightLDA::build_beta_alias_table() {
     }
     AliasTable beta_alias_table(p);
     for (size_t k = 0; k < K; ++k) {
-        beta_samples[k] = beta_alias_table.get_alias_sample(generator);
+        beta_samples[k] = beta_alias_table.get_alias_sample();
     }
 }
 
@@ -45,12 +45,19 @@ void LightLDA::build_term_alias_table(size_t w) {
     }
     AliasTable term_alias_table(p);
     for (size_t k = 0; k < K; ++k) {
-        term_samples[w][k] = term_alias_table.get_alias_sample(generator);;
+        term_samples[w][k] = term_alias_table.get_alias_sample();;
     }
 }
 
 void LightLDA::estimate(size_t num_iterations, size_t num_mh_steps,
                         bool calc_perp) {
+#ifndef __APPLE__
+    static thread_local random_device rd;
+    static thread_local default_random_engine generator(rd());
+#else
+    static random_device rd;
+    static default_random_engine generator(rd());
+#endif
     for (size_t iter = 0; iter< num_iterations; ++iter) {
         cout << "Iteration " << iter << endl;
         size_t sample_count = 0;

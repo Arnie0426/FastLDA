@@ -22,13 +22,11 @@ class LDA {
     vector<vector<size_t>> CKW;
     vector<size_t> CK;
 
-    default_random_engine generator;
-
  public:
     LDA(const vector<vector<size_t>> &docs,
         const size_t V, const size_t K, const float alpha, const float beta);
     void initialize();
-    virtual void estimate(size_t num_iterations, bool calc_perp);
+    virtual void estimate(size_t num_iterations, bool calc_perp) { } 
     float calculate_perplexity();
     vector<vector<float>> getTopicTermMatrix() const;
     vector<vector<float>> getDocTopicMatrix() const;

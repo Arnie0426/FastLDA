@@ -11,6 +11,13 @@ CGS_LDA::CGS_LDA(const vector<vector<size_t>> &docs, const size_t V,
 }
 
 void CGS_LDA::estimate(size_t num_iterations, bool calc_perp) {
+#ifndef __APPLE__
+    static thread_local random_device rd;
+    static thread_local default_random_engine generator(rd());
+#else
+    static random_device rd;
+    static default_random_engine generator(rd());
+#endif
     vector<float> prob_vector(K);
     for (size_t iter = 0; iter < num_iterations; ++iter) {
         cout << "Iteration " << iter << endl;

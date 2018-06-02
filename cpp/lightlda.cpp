@@ -1,6 +1,7 @@
-#include "lightlda.h"
+// Copyright 2018 Arnab Bhadury
+#include "cpp/lightlda.h"
 
-
+namespace fastlda {
 LightLDA::LightLDA(const vector<vector<size_t>> &docs, const size_t V, const size_t K,
                    const float alpha, const float beta) : LDA(docs, V, K, alpha, beta),
                         beta_samples(vector<size_t>(K)),
@@ -138,4 +139,5 @@ void LightLDA::estimate(size_t num_iterations, size_t num_mh_steps, bool calc_pe
         }
 
     }
+}
 }

@@ -1,9 +1,11 @@
+// Copyright 2018 Arnab Bhadury
 #include <algorithm>
 #include <random>
 #include <vector>
 
-#include "lda_inference.h"
+#include "cpp/lda_inference.h"
 
+namespace fastlda {
 LDA_Inference::LDA_Inference(const vector<vector<float>> &topic_term_matrix,
                              const float alpha) :
                                  topic_term_matrix(topic_term_matrix),
@@ -65,3 +67,4 @@ vector<float> LDA_Inference::infer(const vector<size_t> &doc,
             [&sum](float &p) { p /= sum; });
     return prob_vector;
 }
+}  // fastlda

@@ -1,14 +1,15 @@
+// Copyright 2018 Arnab Bhadury
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <vector>
 
-#include "cgs_lda.h"
-#include "lda_inference.h"
-#include "lightlda.h"
+#include "cpp/cgs_lda.h"
+#include "cpp/lda_inference.h"
+#include "cpp/lightlda.h"
 
 namespace py = pybind11;
-using namespace std;
 
+namespace fastlda {
 PYBIND11_MODULE(fastlda, m) {
     py::class_<CGS_LDA>(m, "CGS_LDA")
        .def(py::init<const vector<vector<size_t>> &, const size_t &,
@@ -55,4 +56,5 @@ PYBIND11_MODULE(fastlda, m) {
 #else
     m.attr("__version__") = "dev";
 #endif
+}
 }

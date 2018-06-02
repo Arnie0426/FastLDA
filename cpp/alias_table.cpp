@@ -1,14 +1,18 @@
+// Copyright 2018 Arnab Bhadury
+
+#include <limits>
 #include <random>
 #include <numeric>
 #include <string>
 #include <vector>
 #include <utility>
 
-#include "alias_table.h"
+#include "cpp/alias_table.h"
 
+namespace fastlda {
 AliasTable::AliasTable(const vector<float> &prob) {
     size_t dim = prob.size();
-    float norm = std::accumulate(prob.begin(), prob.end(), 0.0);
+    float norm = accumulate(prob.begin(), prob.end(), 0.0);
     vector<float> scaled_prob(dim);
 
     vector<pair<float, size_t>> rich;
@@ -55,7 +59,6 @@ AliasTable::AliasTable(const vector<float> &prob) {
         main_table.push_back(make_pair(1.0, p.second));
         alias_table.push_back(-1);
     }
-
 }
 
 size_t AliasTable::get_alias_sample(default_random_engine generator) const {
@@ -83,3 +86,4 @@ size_t AliasTable::get_alias_sample(default_random_engine generator) const {
         return alias_table[k];
     }
 }
+}  // fastlda

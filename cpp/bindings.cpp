@@ -57,4 +57,4 @@ PYBIND11_MODULE(fastlda, m) {
     m.attr("__version__") = "dev";
 #endif
 }
-}
+}  // namespace fastlda

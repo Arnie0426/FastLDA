@@ -10,12 +10,12 @@
 namespace fastlda {
 class LDA {
  protected:
-    vector<vector<size_t>> docs;
-    size_t K;
-    size_t V;
-    float alpha;
-    float beta;
-    size_t total_num_of_words;
+    const vector<vector<size_t>> docs_;
+    const size_t numTopics_;
+    const size_t vocSize_;
+    const float alpha_;
+    const float beta_;
+    size_t totalNumOfWords_;
     // Count matrices
     vector<vector<size_t>> Z;
     vector<vector<size_t>> CDK;
@@ -23,11 +23,11 @@ class LDA {
     vector<size_t> CK;
 
  public:
-    LDA(const vector<vector<size_t>> &docs,
-        const size_t V, const size_t K, const float alpha, const float beta);
+    LDA(const vector<vector<size_t>> &docs, const size_t V, 
+        const size_t K, const float alpha, const float beta);
     void initialize();
-    virtual void estimate(size_t num_iterations, bool calc_perp) { }
-    float calculate_perplexity();
+    virtual void estimate(size_t numIterations, bool calcPerp) { }
+    float calculatePerplexity();
     vector<vector<float>> getTopicTermMatrix() const;
     vector<vector<float>> getDocTopicMatrix() const;
 };

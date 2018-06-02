@@ -22,7 +22,7 @@ PYBIND11_MODULE(fastlda, m) {
                      )pbdoc")
        .def("estimate", &CGS_LDA::estimate, "Estimate LDA parameters",
             py::arg("num_iterations") = 100, py::arg("calc_perp") = false)
-       .def("calculate_perplexity", &CGS_LDA::calculate_perplexity)
+       .def("calculatePerplexity", &CGS_LDA::calculatePerplexity)
        .def("getTopicTermMatrix", &CGS_LDA::getTopicTermMatrix)
        .def("getDocTopicMatrix", &CGS_LDA::getDocTopicMatrix);
 
@@ -36,7 +36,7 @@ PYBIND11_MODULE(fastlda, m) {
         .def("estimate", &LightLDA::estimate, "Estimate LDA parameters",
              py::arg("num_iterations") = 100, py::arg("num_mh_steps") = 4,
              py::arg("calc_perp") = false)
-        .def("calculate_perplexity", &LightLDA::calculate_perplexity)
+        .def("calculatePerplexity", &LightLDA::calculatePerplexity)
         .def("getTopicTermMatrix", &LightLDA::getTopicTermMatrix)
         .def("getDocTopicMatrix", &LightLDA::getDocTopicMatrix);
 
@@ -50,7 +50,7 @@ PYBIND11_MODULE(fastlda, m) {
     py::class_<AliasTable>(m, "AliasTable")
         .def(py::init<const vector<float> &>(),
             "Alias Table module")
-        .def("get_alias_sample", &AliasTable::get_alias_sample);
+        .def("get_alias_sample", &AliasTable::getAliasSample);
 
 #ifdef VERSION_INFO
     m.attr("__version__") = VERSION_INFO;

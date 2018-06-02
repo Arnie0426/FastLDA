@@ -13,10 +13,10 @@ namespace fastlda {
 class AliasTable {
  public:
     explicit AliasTable(const vector<float> &prob);
-    size_t get_alias_sample() const;
+    size_t getAliasSample() const;
  private:
-    vector<pair<float, size_t>> main_table;
-    vector<size_t> alias_table;
+    vector<pair<float, size_t>> mainTable_;
+    vector<size_t> aliasTable_;
 };
 }  // namespace fastlda
 #endif  // CPP_ALIAS_TABLE_H_

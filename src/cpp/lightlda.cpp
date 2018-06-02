@@ -7,50 +7,52 @@ namespace fastlda {
 LightLDA::LightLDA(const vector<vector<size_t>> &docs, const size_t V,
                    const size_t K, const float alpha, const float beta)
                     : LDA(docs, V, K, alpha, beta),
-                      beta_samples(vector<size_t>(K)),
-                      term_samples(vector<vector<size_t>>(V,
+                      betaSamples(vector<size_t>(K)),
+                      termSamples(vector<vector<size_t>>(V,
                         vector<size_t>(K))),
-                      sample_counts(vector<size_t>(V + 1)),
-                      uniform_topic(uniform_int_distribution<>(0, K - 1)),
+                      sampleCounts(vector<size_t>(V + 1)),
+                      uniformTopic(uniform_int_distribution<>(0, K - 1)),
                       u01(uniform_real_distribution<float>(0, 1)),
-                      beta_sum(0.0), term_sum(0.0) {
-    build_beta_alias_table();
+                      betaSum(0.0), termSum(0.0) {
+    buildAliasTables();
+}
 
-    for (size_t w = 0; w < V; ++w) {
-        build_term_alias_table(w);
-        for (size_t k = 0; k < K; ++k) {
-            term_sum += CKW[k][w] / (CK[k] + V * beta);
+void LightLDA::buildAliasTables() {
+    buildBetaAliasTable();
+    for (auto w = 0; w < vocSize_; ++w) {
+        buildTermAliasTable(w);
+        for (auto k = 0; k < numTopics_; ++k) {
+            termSum += CKW[k][w] / (CK[k] + vocSize_ * beta_);
         }
     }
-    for (size_t k = 0; k < K; ++k) {
-        beta_sum += (beta / CK[k] + V * beta);
+    for (size_t k = 0; k < numTopics_; ++k) {
+        betaSum += (beta_ / CK[k] + vocSize_ * beta_);
+    }
+}
+void LightLDA::buildBetaAliasTable() {
+    vector<float> p(numTopics_);
+    for (auto k = 0; k < numTopics_; ++k) {
+        p[k] = beta_ / (CK[k] + vocSize_ * beta_);
+    }
+    AliasTable betaAliasTable(p);
+    for (auto k = 0; k < numTopics_; ++k) {
+        betaSamples[k] = betaAliasTable.getAliasSample();
     }
 }
 
-void LightLDA::build_beta_alias_table() {
-    vector<float> p(K);
-    for (size_t k = 0; k < K; ++k) {
-        p[k] = beta / (CK[k] + V * beta);
+void LightLDA::buildTermAliasTable(size_t w) {
+    vector<float> p(numTopics_);
+    for (auto k = 0; k < numTopics_; ++k) {
+        p[k] = CKW[k][w] / (CK[k] + vocSize_ * beta_);
     }
-    AliasTable beta_alias_table(p);
-    for (size_t k = 0; k < K; ++k) {
-        beta_samples[k] = beta_alias_table.get_alias_sample();
-    }
-}
-
-void LightLDA::build_term_alias_table(size_t w) {
-    vector<float> p(K);
-    for (size_t k = 0; k < K; ++k) {
-        p[k] = CKW[k][w] / (CK[k] + V * beta);
-    }
-    AliasTable term_alias_table(p);
-    for (size_t k = 0; k < K; ++k) {
-        term_samples[w][k] = term_alias_table.get_alias_sample();;
+    AliasTable termAliasTable(p);
+    for (auto k = 0; k < numTopics_; ++k) {
+        termSamples[w][k] = termAliasTable.getAliasSample();
     }
 }
 
-void LightLDA::estimate(size_t num_iterations, size_t num_mh_steps,
-                        bool calc_perp) {
+void LightLDA::estimate(size_t numIterations, size_t numMHSteps,
+                        bool calcPerp) {
 #ifndef __APPLE__
     static thread_local random_device rd;
     static thread_local default_random_engine generator(rd());
@@ -58,100 +60,98 @@ void LightLDA::estimate(size_t num_iterations, size_t num_mh_steps,
     static random_device rd;
     static default_random_engine generator(rd());
 #endif
-    for (size_t iter = 0; iter< num_iterations; ++iter) {
+    for (auto iter = 0; iter < numIterations; ++iter) {
         cout << "Iteration " << iter << endl;
-        size_t sample_count = 0;
-        size_t accept_count = 0;
-        for (size_t d = 0; d < docs.size(); ++d) {
-            size_t N = docs[d].size();
-            uniform_int_distribution<> doc_dist(0, N - 1);
-            for (size_t n = 0; n < N; ++n) {
-                for (size_t m = 0; m < num_mh_steps; ++m) {
-                    sample_count++;
+        size_t sampleCount = 0;
+        size_t acceptCount = 0;
+        for (auto d = 0; d < docs_.size(); ++d) {
+            auto N = docs_[d].size();
+            uniform_int_distribution<> docDist(0, N - 1);
+            for (auto n = 0; n < N; ++n) {
+                for (auto m = 0; m < numMHSteps; ++m) {
+                    sampleCount++;
 
-                    size_t topic_id = Z[d][n];
-                    size_t term_id = docs[d][n];
+                    size_t topicId = Z[d][n];
+                    size_t termId = docs_[d][n];
 
-                    size_t proposed_topic;
+                    size_t proposedTopic;
                     float accept = 0.0;
 
                     // ignore current count
-                    CDK[d][topic_id]--;
-                    CKW[topic_id][term_id]--;
-                    CK[topic_id]--;
+                    CDK[d][topicId]--;
+                    CKW[topicId][termId]--;
+                    CK[topicId]--;
 
                     uniform_int_distribution<> coin(0, 1);  // coin flip
                     auto proposal = coin(generator);
                     if (proposal == 0) {
-                        float u = u01(generator) * (N - 1 + K * alpha);
+                        float u = u01(generator) * (N - 1 + numTopics_ * alpha_);
                         if (u < N - 1) {
-                            size_t index = doc_dist(generator);
-                            proposed_topic = Z[d][index];
+                            size_t index = docDist(generator);
+                            proposedTopic = Z[d][index];
                         } else {
-                            proposed_topic = uniform_topic(generator);
+                            proposedTopic = uniformTopic(generator);
                         }
                         // MH Probability
-
-                        accept = (CKW[proposed_topic][term_id] + beta)
-                                 / (CKW[topic_id][term_id] + beta);
-                        accept *= (CK[topic_id] + V * beta)
-                                  / (CK[proposed_topic] + V * beta);
-                        accept *= (CDK[d][proposed_topic] + alpha)
-                                  / (CDK[d][topic_id] + alpha);
-                        accept *= (CDK[d][topic_id] + alpha + 1)
-                                  / (CDK[d][proposed_topic] + alpha + 1);
+                        accept = (CKW[proposedTopic][termId] + beta_)
+                                 / (CKW[topicId][termId] + beta_);
+                        accept *= (CK[topicId] + vocSize_ * beta_)
+                                  / (CK[proposedTopic] + vocSize_ * beta_);
+                        accept *= (CDK[d][proposedTopic] + alpha_)
+                                  / (CDK[d][topicId] + alpha_);
+                        accept *= (CDK[d][topicId] + alpha_ + 1)
+                                  / (CDK[d][proposedTopic] + alpha_ + 1);
                     } else {
-                        if (sample_counts[V] >= K) {
-                            build_beta_alias_table();
-                            sample_counts[V] = 0;
+                        if (sampleCounts[vocSize_] >= numTopics_) {
+                            buildBetaAliasTable();
+                            sampleCounts[vocSize_] = 0;
                         }
-                        if (sample_counts[term_id] >= K) {
-                            build_term_alias_table(term_id);
-                            sample_counts[term_id] = 0;
+                        if (sampleCounts[termId] >= vocSize_) {
+                            buildTermAliasTable(termId);
+                            sampleCounts[termId] = 0;
                         }
-                        float u = u01(generator) * (beta_sum + term_sum);
-                        if (u < beta_sum) {
-                            proposed_topic = beta_samples[sample_counts[V]];
-                            sample_counts[V]++;
+                        float u = u01(generator) * (betaSum + termSum);
+                        if (u < betaSum) {
+                            proposedTopic = betaSamples[sampleCounts[vocSize_]];
+                            sampleCounts[vocSize_]++;
                         } else {
-                            proposed_topic = term_samples[term_id]
-                                                [sample_counts[term_id]];
-                            sample_counts[term_id]++;
+                            proposedTopic = termSamples[termId][sampleCounts[termId]];
+                            sampleCounts[termId]++;
                         }
-                        accept = (CDK[d][proposed_topic] + alpha)
-                                 / (CDK[d][topic_id] + alpha);
-                        accept *= (CKW[proposed_topic][term_id] + beta)
-                                  / (CKW[topic_id][term_id] + beta);
-                        accept *= (CK[topic_id] + V * beta)
-                                  / (CK[proposed_topic] + V * beta);
-                        accept *= (CKW[topic_id][term_id] + beta + 1)
-                                  / (CKW[proposed_topic][term_id] + beta + 1);
-                        accept *= (CK[proposed_topic] + 1 + V * beta)
-                                  / (CK[topic_id] + 1 + V * beta);
+                        accept = (CDK[d][proposedTopic] + alpha_)
+                                 / (CDK[d][topicId] + alpha_);
+                        accept *= (CKW[proposedTopic][termId] + beta_)
+                                  / (CKW[topicId][termId] + beta_);
+                        accept *= (CK[topicId] + vocSize_ * beta_)
+                                  / (CK[proposedTopic] + vocSize_ * beta_);
+                        accept *= (CKW[topicId][termId] + beta_ + 1)
+                                  / (CKW[proposedTopic][termId] + beta_ + 1);
+                        accept *= (CK[proposedTopic] + 1 + vocSize_ * beta_)
+                                  / (CK[topicId] + 1 + vocSize_ * beta_);
                     }
                     if (u01(generator) >= accept) {
                         // Reject proposed sample
-                        proposed_topic = topic_id;
+                        proposedTopic = topicId;
                     } else {
-                        accept_count++;
-                        beta_sum -= (beta / (CK[topic_id] + V * beta));
-                        beta_sum += (beta / (CK[proposed_topic] + V * beta));
-                        term_sum -= (CKW[topic_id][term_id]
-                                    / (CK[topic_id] + V * beta));
-                        term_sum += (CKW[proposed_topic][term_id]
-                                    / (CK[proposed_topic] + V * beta));
+                        acceptCount++;
+                        betaSum -= (beta_ / (CK[topicId] + vocSize_ * beta_));
+                        betaSum += (beta_ / (CK[proposedTopic] + vocSize_ * beta_));
+                        termSum -= (CKW[topicId][termId]
+                                   / (CK[topicId] + vocSize_ * beta_));
+                        termSum += (CKW[proposedTopic][termId]
+                                   / (CK[proposedTopic] + vocSize_ * beta_));
                     }
-                    CDK[d][proposed_topic]++;
-                    CKW[proposed_topic][term_id]++;
-                    CK[proposed_topic]++;
-                    Z[d][n] = proposed_topic;
+                    CDK[d][proposedTopic]++;
+                    CKW[proposedTopic][termId]++;
+                    CK[proposedTopic]++;
+                    Z[d][n] = proposedTopic;
                 }
             }
         }
-        cout << "MH Acceptance: " << float(accept_count) / sample_count << endl;
-        if (calc_perp) {
-            if (iter && (iter % 10 == 0 || iter == num_iterations - 1)) {
-                cout << "Perplexity: " << calculate_perplexity() << endl;
+        cout << "MH Acceptance: " << float(acceptCount) / sampleCount << endl;
+        if (calcPerp) {
+            if (iter && (iter % 10 == 0 || iter == numIterations - 1)) {
+                cout << "Perplexity: " << calculatePerplexity() << endl;
             }
         }
     }

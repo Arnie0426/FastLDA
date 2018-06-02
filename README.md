@@ -25,7 +25,7 @@
 ```bash
 git submodule init
 git submodule update
-pip install --upgrade .
+pip install --upgrade .  # recommend doing this in a virtualenv
 ```
 This should install all the dependencies needed.
 

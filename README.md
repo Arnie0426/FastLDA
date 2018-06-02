@@ -31,7 +31,7 @@ This should install all the dependencies needed.
 
 3. Run
 ```bash
-python python/lda_example.py
+python src/python/lda_example.py
 ```
 for an end-to-end LDA run (from training to inference using NIPS dataset from https://archive.ics.uci.edu/ml/datasets/bag+of+words).
 
@@ -43,7 +43,7 @@ for an end-to-end LDA run (from training to inference using NIPS dataset from ht
 
 A Python class has been exposed with all the relevant training/inference functions.
 
-For an example, see: [this simple example](https://github.com/Arnie0426/FastLDA/blob/master/python/lda_example.py#L26-L51)
+For an example, see: [this simple example](https://github.com/Arnie0426/FastLDA/blob/master/src/python/lda_example.py#L26-L51)
 
 ## License
 

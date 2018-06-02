@@ -6,14 +6,14 @@
 #include "cpp/lda_inference.h"
 
 namespace fastlda {
-LDA_Inference::LDA_Inference(const vector<vector<float>> &topic_term_matrix,
-                             const float alpha) :
-                                 topic_term_matrix(topic_term_matrix),
-                                 alpha(alpha),
-                                 K(topic_term_matrix.size()) { }
+LDAInference::LDAInference(const vector<vector<float>> &topic_term_matrix,
+                           const float alpha) :
+                               topic_term_matrix(topic_term_matrix),
+                               alpha(alpha),
+                               K(topic_term_matrix.size()) { }
 
-vector<float> LDA_Inference::infer(const vector<size_t> &doc,
-                                   size_t num_iterations) const {
+vector<float> LDAInference::infer(const vector<size_t> &doc,
+                                  size_t num_iterations) const {
 #ifndef __APPLE__
     static thread_local random_device rd;
     static thread_local default_random_engine local_generator(rd());

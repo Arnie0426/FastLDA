@@ -8,15 +8,15 @@
 #include "cpp/common.h"
 
 namespace fastlda {
-class LDA_Inference {
+class LDAInference {
  private:
     vector<vector<float>> topic_term_matrix;
     size_t K;
     float alpha;
 
  public:
-    LDA_Inference(const vector<vector<float>> &topic_term_matrix,
-                  const float alpha);
+    LDAInference(const vector<vector<float>> &topic_term_matrix,
+                 const float alpha);
     vector<float> infer(const vector<size_t> &doc,
                         size_t num_iterations) const;
 };

@@ -17,7 +17,7 @@ class LatentDirichletAllocation(object):
         self.num_topics = len(
             self.topic_term_matrix) if self.topic_term_matrix else None
         self.inf_model = None if not self.topic_term_matrix else \
-            fastlda.LDA_Inference(self.topic_term_matrix, alpha)
+            fastlda.LDAInference(self.topic_term_matrix, alpha)
         self.alpha = alpha
 
     def train(self, docs, vocabulary, num_topics=50, alpha=None,
@@ -62,7 +62,7 @@ class LatentDirichletAllocation(object):
             raise LDAException("Topic Term Matrix needs to be loaded for "
                                "document inference")
         if not self.inf_model:
-            self.inf_model = fastlda.LDA_Inference(self.topic_term_matrix,
+            self.inf_model = fastlda.LDAInference(self.topic_term_matrix,
                                                    self.alpha)
         return self.inf_model.infer(doc, num_iterations)
 

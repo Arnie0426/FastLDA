@@ -37,13 +37,12 @@ PYBIND11_MODULE(fastlda, m) {
         .def("getTopicTermMatrix", &LightLDA::getTopicTermMatrix)
         .def("getDocTopicMatrix", &LightLDA::getDocTopicMatrix);
 
-    m.doc() = R"pbdoc(
-        CGS Latent Dirichlet Allocation training module exposed to Python
-        -----------------------
-           estimate
-           getTopicTermMatrix
-           getDocTopicMatrix
-    )pbdoc";
+
+    py::class_<LDAInference>(m, "LDAInference")
+        .def(py::init<const vector<vector<float>> &, const float & >(),
+            "Inference module for Latent Dirichlet Allocation")
+        .def("infer", &LDAInference::infer,
+            "Infer latent topics for a document");
 
     py::class_<LDA_Inference>(m, "LDA_Inference")
         .def(py::init<const vector<vector<float>> &, const float & >(),

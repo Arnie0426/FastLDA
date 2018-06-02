@@ -106,7 +106,7 @@ void LightLDA::estimate(size_t numIterations, size_t numMHSteps,
                             buildBetaAliasTable();
                             sampleCounts[vocSize_] = 0;
                         }
-                        if (sampleCounts[termId] >= vocSize_) {
+                        if (sampleCounts[termId] >= numTopics_) {
                             buildTermAliasTable(termId);
                             sampleCounts[termId] = 0;
                         }

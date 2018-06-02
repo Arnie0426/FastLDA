@@ -12,8 +12,8 @@ class LatentDirichletAllocation(object):
     '''Python wrapper around the C++ modules'''
 
     def __init__(self, model_path=None, alpha=1.0):
-        self.topic_term_matrix = [
-        ] if not model_path else _load_mat_from_file(model_path)
+        self.topic_term_matrix = [] if \
+            not model_path else _load_mat_from_file(model_path)
         self.num_topics = len(
             self.topic_term_matrix) if self.topic_term_matrix else None
         self.inf_model = None if not self.topic_term_matrix else \

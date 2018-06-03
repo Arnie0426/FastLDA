@@ -55,13 +55,10 @@ vector<float> LDAInference::infer(const vector<size_t> &doc,
         }
     }
     // compute true probability vector
-    float sum = 0.0;
-    for (auto k = 0; k < numTopics_; ++k) {
-        probVector[k] = cdk[k] + alpha_;
-        sum += probVector[k];
-    }
+    auto lambda = [&](float a, float b){ return a + b + alpha_; };
+    float sum = accumulate(cdk.begin(), cdk.end(), 0.0, lambda);
     for_each(probVector.begin(), probVector.end(),
-            [&sum](float &p) { p /= sum; });
+             [&sum](float &p) { p /= sum; });
     return probVector;
 }
 }  // namespace fastlda

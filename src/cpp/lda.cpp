@@ -11,9 +11,9 @@ namespace fastlda {
 LDA::LDA(const vector<vector<size_t>> &docs, const size_t V,
          const size_t K, const float alpha, const float beta) : docs_(docs),
              numTopics_(K), alpha_(alpha), beta_(beta), vocSize_(V),
-             Z(vector<vector<size_t>> (docs.size())),
-             CDK(vector<vector<size_t>> (docs.size(), vector<size_t> (K))),
-             CKW(vector<vector<size_t>> (K, vector<size_t> (V))),
+             Z(build2DVector<size_t>(docs.size(), 0)),
+             CDK(build2DVector<size_t>(docs.size(), K)),
+             CKW(build2DVector<size_t>(K, V)),
              CK(vector<size_t> (K)), totalNumOfWords_(0) {
     initialize();
 }

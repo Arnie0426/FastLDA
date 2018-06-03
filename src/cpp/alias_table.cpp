@@ -46,14 +46,14 @@ AliasTable::AliasTable(const vector<float> &prob) {
 
     // handle numerical instability
     while (!rich.empty()) {
-        pair<float, size_t> r = rich.back();
+        auto r = rich.back();
         rich.pop_back();
         mainTable_.push_back(make_pair(1.0, r.second));
         aliasTable_.push_back(-1);
     }
 
     while (!poor.empty()) {
-        pair<float, size_t> p = poor.back();
+        auto p = poor.back();
         poor.pop_back();
         mainTable_.push_back(make_pair(1.0, p.second));
         aliasTable_.push_back(-1);

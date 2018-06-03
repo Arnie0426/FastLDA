@@ -6,62 +6,59 @@
 #include "cpp/lda_inference.h"
 
 namespace fastlda {
-LDAInference::LDAInference(const vector<vector<float>> &topic_term_matrix,
+LDAInference::LDAInference(const vector<vector<float>> &topicTermMatrix,
                            const float alpha) :
-                               topic_term_matrix(topic_term_matrix),
-                               alpha(alpha),
-                               K(topic_term_matrix.size()) { }
+                               topicTermMatrix(topicTermMatrix),
+                               alpha_(alpha),
+                               numTopics_(topicTermMatrix.size()) { }
 
 vector<float> LDAInference::infer(const vector<size_t> &doc,
-                                  size_t num_iterations) const {
+                                  size_t numIterations) const {
 #ifndef __APPLE__
     static thread_local random_device rd;
-    static thread_local default_random_engine local_generator(rd());
+    static thread_local default_random_engine localGenerator(rd());
 #else
     static random_device rd;
-    static default_random_engine local_generator(rd());
+    static default_random_engine localGenerator(rd());
 #endif
 
-    size_t N = doc.size();
-    vector<size_t> cdk(K);
-    vector<float> prob_vector(K);
-    vector<size_t> topic_indices(N);
+    auto N = doc.size();
+    vector<size_t> cdk(numTopics_);
+    vector<float> probVector(numTopics_);
+    vector<size_t> topicIndices(N);
 
     // initialize counts
-    uniform_int_distribution<> uniform_topic_dist(0, K-1);
-    for (size_t n = 0; n < N; ++n) {
-        size_t term_id = doc[n];
-        size_t topic_id = uniform_topic_dist(local_generator);
-        cdk[topic_id]++;
-        topic_indices[n] = topic_id;
+    uniform_int_distribution<> uniformTopicDist(0, numTopics_-1);
+    for (auto n = 0; n < N; ++n) {
+        auto termId = doc[n];
+        auto topicId = uniformTopicDist(localGenerator);
+        cdk[topicId]++;
+        topicIndices[n] = topicId;
     }
 
     // infer topics for document
-    for (size_t iter = 0; iter < num_iterations; ++iter) {
-        for (size_t n = 0; n < N; ++n) {
-            size_t topic_id = topic_indices[n];
-            size_t term_id = doc[n];
-            cdk[topic_id]--;
+    for (auto iter = 0; iter < numIterations; ++iter) {
+        for (auto n = 0; n < N; ++n) {
+            auto topicId = topicIndices[n];
+            auto termId = doc[n];
+            cdk[topicId]--;
 
-            for (size_t k = 0; k < K; ++k) {
-                prob_vector[k] = (cdk[k] + alpha)
-                                 * topic_term_matrix[k][term_id];
+            for (auto k = 0; k < numTopics_; ++k) {
+                probVector[k] = (cdk[k] + alpha_)
+                                 * topicTermMatrix[k][termId];
             }
-            discrete_distribution<size_t> mult(prob_vector.begin(),
-                                               prob_vector.end());
-            topic_id = mult(local_generator);
-            topic_indices[n] = topic_id;
-            cdk[topic_id]++;
+            discrete_distribution<size_t> mult(probVector.begin(),
+                                               probVector.end());
+            topicId = mult(localGenerator);
+            topicIndices[n] = topicId;
+            cdk[topicId]++;
         }
     }
     // compute true probability vector
-    float sum = 0.0;
-    for (size_t k = 0; k < K; ++k) {
-        prob_vector[k] = cdk[k] + alpha;
-        sum += prob_vector[k];
-    }
-    for_each(prob_vector.begin(), prob_vector.end(),
-            [&sum](float &p) { p /= sum; });
-    return prob_vector;
+    auto lambda = [&](float a, float b){ return a + b + alpha_; };
+    float sum = accumulate(cdk.begin(), cdk.end(), 0.0, lambda);
+    for_each(probVector.begin(), probVector.end(),
+             [&sum](float &p) { p /= sum; });
+    return probVector;
 }
 }  // namespace fastlda

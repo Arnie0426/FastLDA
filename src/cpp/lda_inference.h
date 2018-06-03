@@ -1,6 +1,6 @@
 // Copyright 2018 Arnab Bhadury
-#ifndef CPP_LDA_INFERENCE_H_
-#define CPP_LDA_INFERENCE_H_
+#ifndef SRC_CPP_LDA_INFERENCE_H_
+#define SRC_CPP_LDA_INFERENCE_H_
 
 #include <vector>
 #include <random>
@@ -10,15 +10,15 @@
 namespace fastlda {
 class LDAInference {
  private:
-    vector<vector<float>> topic_term_matrix;
-    size_t K;
-    float alpha;
+    const vector<vector<float>> topicTermMatrix;
+    const size_t numTopics_;
+    const float alpha_;
 
  public:
-    LDAInference(const vector<vector<float>> &topic_term_matrix,
+    LDAInference(const vector<vector<float>> &topicTermMatrix,
                  const float alpha);
     vector<float> infer(const vector<size_t> &doc,
-                        size_t num_iterations) const;
+                        size_t numIterations) const;
 };
 }  // namespace fastlda
-#endif  // CPP_LDA_INFERENCE_H_
+#endif  // SRC_CPP_LDA_INFERENCE_H_

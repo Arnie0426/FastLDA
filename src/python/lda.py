@@ -28,8 +28,9 @@ class LatentDirichletAllocation(object):
         if not alpha:
             alpha = 50. / num_topics  # suggested training heuristic
 
-        self.num_topics, self.vocabulary = num_topics, vocabulary
-        lda = fastlda.LightLDA(docs, len(vocabulary), num_topics, alpha, beta)
+        self.vocabulary = vocabulary
+        lda = fastlda.CGS_LDA(docs, len(vocabulary), self.num_topics, 
+                               self.alpha, self.beta)
         lda.estimate(num_iterations, calc_perp=calculate_perplexity)
         self.doc_topic_matrix = lda.getDocTopicMatrix()
         self.topic_term_matrix = lda.getTopicTermMatrix()

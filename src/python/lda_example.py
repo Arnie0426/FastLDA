@@ -28,7 +28,7 @@ def main():
     docs, vocabulary = load_data()
     print("NIPS dataset loaded.")
     # test training
-    lda = LatentDirichletAllocation()
+    lda = LatentDirichletAllocation(num_topics=20)
     print("Initialized LDA. Estimating parameters with 50 iterations.")
     lda.train(docs=docs, vocabulary=vocabulary, num_iterations=50)
     lda.save_parameters()

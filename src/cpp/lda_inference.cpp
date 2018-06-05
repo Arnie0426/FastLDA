@@ -24,7 +24,6 @@ vector<float> LDAInference::infer(const vector<size_t> &doc,
 
     auto N = doc.size();
     vector<size_t> cdk(numTopics_);
-    vector<float> probVector(numTopics_);
     vector<size_t> topicIndices(N);
 
     // initialize counts
@@ -36,29 +35,31 @@ vector<float> LDAInference::infer(const vector<size_t> &doc,
         topicIndices[n] = topicId;
     }
 
-    // infer topics for document
-    for (auto iter = 0; iter < numIterations; ++iter) {
-        for (auto n = 0; n < N; ++n) {
-            auto topicId = topicIndices[n];
-            auto termId = doc[n];
-            cdk[topicId]--;
+    {
+        vector<float> probVector(numTopics_);
+        // infer topics for document
+        for (auto iter = 0; iter < numIterations; ++iter) {
+            for (auto n = 0; n < N; ++n) {
+                auto topicId = topicIndices[n];
+                auto termId = doc[n];
+                cdk[topicId]--;
 
-            for (auto k = 0; k < numTopics_; ++k) {
-                probVector[k] = (cdk[k] + alpha_)
-                                 * topicTermMatrix[k][termId];
+                for (auto k = 0; k < numTopics_; ++k) {
+                    probVector[k] = (cdk[k] + alpha_)
+                                     * topicTermMatrix[k][termId];
+                }
+                discrete_distribution<size_t> mult(probVector.begin(),
+                                                   probVector.end());
+                topicId = mult(localGenerator);
+                topicIndices[n] = topicId;
+                cdk[topicId]++;
             }
-            discrete_distribution<size_t> mult(probVector.begin(),
-                                               probVector.end());
-            topicId = mult(localGenerator);
-            topicIndices[n] = topicId;
-            cdk[topicId]++;
         }
     }
     // compute true probability vector
-    auto lambda = [&](float a, float b){ return a + b + alpha_; };
-    float sum = accumulate(cdk.begin(), cdk.end(), 0.0, lambda);
+    vector<float> probVector(cdk.begin(), cdk.end());
     for_each(probVector.begin(), probVector.end(),
-             [&sum](float &p) { p /= sum; });
+             [&](float &p) { p = (p +alpha_) / (N + numTopics_ * alpha_); });
     return probVector;
 }
 }  // namespace fastlda

@@ -28,20 +28,20 @@ def main():
     docs, vocabulary = load_data()
     print("NIPS dataset loaded.")
     # test training
-    lda = LatentDirichletAllocation(num_topics=20)
-    print("Initialized LDA. Estimating parameters with 30 iterations.")
-    lda.train(docs=docs, vocabulary=vocabulary, num_iterations=30)
+    lda = LatentDirichletAllocation(num_topics=50)
+    print("Initialized LDA. Estimating parameters with 50 iterations.")
+    lda.train(docs=docs, vocabulary=vocabulary, num_iterations=50)
     lda.save_parameters()
     print("Saved LDA Parameters.")
 
     # test inference model after training
     topics = lda.infer_doc(docs[0])
     s = sorted(range(len(topics)), key=topics.__getitem__, reverse=True)
-    print(["(Top {} : {})".format(w, topics[w]) for w in s[:10]])
+    print(["(Top {} : {})".format(w, topics[w]) for w in s[:5]])
     print("\n\nComparing to doc in training set..")
     topics = lda.doc_topic_matrix[0]
     s = sorted(range(len(topics)), key=topics.__getitem__, reverse=True)
-    print(["(Top {} : {})".format(w, topics[w]) for w in s[:10]])
+    print(["(Top {} : {})".format(w, topics[w]) for w in s[:5]])
     # Save topic terms to file
     lda.save_topic_terms()
     print("Topic Terms file saved to ./data/topic_terms.txt")
@@ -51,7 +51,7 @@ def main():
     topics = lda.infer_doc(docs[0])
     print("\n\nInferred model:")
     s = sorted(range(len(topics)), key=topics.__getitem__, reverse=True)
-    print(["(Top {} : {})".format(w, topics[w]) for w in s[:10]])
+    print(["(Top {} : {})".format(w, topics[w]) for w in s[:5]])
 
 
 if __name__ == "__main__":

@@ -24,7 +24,6 @@ vector<float> LDAInference::infer(const vector<size_t> &doc,
 
     auto N = doc.size();
     vector<size_t> cdk(numTopics_);
-
     vector<size_t> topicIndices(N);
 
     // initialize counts

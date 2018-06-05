@@ -24,14 +24,16 @@ class LatentDirichletAllocation(object):
         self.inf_model = None if not self.topic_term_matrix else \
             fastlda.LDAInference(self.topic_term_matrix, self.alpha)
 
-    def train(self, docs, vocabulary, num_iterations=100, calculate_perplexity=False):
+    def train(self, docs, vocabulary, num_iterations=100, calculate_perplexity=False,
+              use_cgs=False):
         if not docs or not vocabulary:
             raise LDAException("docs and vocabulary cannot be empty "
                                "during training")
 
         self.vocabulary = vocabulary
-        lda = fastlda.LightLDA(docs, len(vocabulary), self.num_topics,
-                               self.alpha, self.beta)
+        lda_sampler = fastlda.CGS_LDA if use_cgs else fastlda.LightLDA 
+        lda = lda_sampler(docs, len(vocabulary), self.num_topics,
+                          self.alpha, self.beta)
         lda.estimate(num_iterations, calc_perp=calculate_perplexity)
         self.doc_topic_matrix = lda.getDocTopicMatrix()
         self.topic_term_matrix = lda.getTopicTermMatrix()

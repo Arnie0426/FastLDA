@@ -75,4 +75,16 @@ vector<vector<float>> LDA::getTopicTermMatrix() const {
     }
     return phi;
 }
+
+vector<vector<size_t>> LDA::getSparseDocTopicMatrix() const {
+    return CDK;
+}
+
+vector<vector<size_t>> LDA::getSparseTopicTermMatrix() const {
+    return CKW;
+}
+
+vector<size_t> LDA::getTopicCountMatrix() const {
+    return CK;
+}
 }  // namespace fastlda

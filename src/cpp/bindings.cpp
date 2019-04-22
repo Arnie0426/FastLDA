@@ -38,7 +38,10 @@ PYBIND11_MODULE(fastlda, m) {
              py::arg("calc_perp") = false)
         .def("calculatePerplexity", &LightLDA::calculatePerplexity)
         .def("getTopicTermMatrix", &LightLDA::getTopicTermMatrix)
-        .def("getDocTopicMatrix", &LightLDA::getDocTopicMatrix);
+        .def("getDocTopicMatrix", &LightLDA::getDocTopicMatrix)
+        .def("getSparseDocTopicMatrix", &LightLDA::getSparseDocTopicMatrix)
+        .def("getSparseTopicTermMatrix", &LightLDA::getSparseTopicTermMatrix)
+        .def("getTopicCountMatrix", &LightLDA::getTopicCountMatrix);
 
 
     py::class_<LDAInference>(m, "LDAInference")

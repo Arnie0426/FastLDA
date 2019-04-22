@@ -24,7 +24,10 @@ PYBIND11_MODULE(fastlda, m) {
             py::arg("num_iterations") = 100, py::arg("calc_perp") = false)
        .def("calculatePerplexity", &CGS_LDA::calculatePerplexity)
        .def("getTopicTermMatrix", &CGS_LDA::getTopicTermMatrix)
-       .def("getDocTopicMatrix", &CGS_LDA::getDocTopicMatrix);
+       .def("getDocTopicMatrix", &CGS_LDA::getDocTopicMatrix)
+       .def("getSparseDocTopicMatrix", &CGS_LDA::getSparseDocTopicMatrix)
+       .def("getSparseTopicTermMatrix", &CGS_LDA::getSparseTopicTermMatrix)
+       .def("getTopicCountMatrix", &CGS_LDA::getTopicCountMatrix);
 
 
      py::class_<LightLDA>(m, "LightLDA")
@@ -38,7 +41,10 @@ PYBIND11_MODULE(fastlda, m) {
              py::arg("calc_perp") = false)
         .def("calculatePerplexity", &LightLDA::calculatePerplexity)
         .def("getTopicTermMatrix", &LightLDA::getTopicTermMatrix)
-        .def("getDocTopicMatrix", &LightLDA::getDocTopicMatrix);
+        .def("getDocTopicMatrix", &LightLDA::getDocTopicMatrix)
+        .def("getSparseDocTopicMatrix", &LightLDA::getSparseDocTopicMatrix)
+        .def("getSparseTopicTermMatrix", &LightLDA::getSparseTopicTermMatrix)
+        .def("getTopicCountMatrix", &LightLDA::getTopicCountMatrix);
 
 
     py::class_<LDAInference>(m, "LDAInference")

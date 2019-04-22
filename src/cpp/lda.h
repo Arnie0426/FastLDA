@@ -30,6 +30,9 @@ class LDA {
     float calculatePerplexity();
     vector<vector<float>> getTopicTermMatrix() const;
     vector<vector<float>> getDocTopicMatrix() const;
+    vector<vector<size_t>> getSparseTopicTermMatrix() const;
+    vector<vector<size_t>> getSparseDocTopicMatrix() const;
+    vector<size_t> getTopicCountMatrix() const;
 };
 }  // namespace fastlda
 #endif  // SRC_CPP_LDA_H_

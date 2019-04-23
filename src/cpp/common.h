@@ -3,7 +3,9 @@
 #ifndef SRC_CPP_COMMON_H_
 #define SRC_CPP_COMMON_H_
 
+#include <Eigen/Sparse>
 #include <algorithm>
+#include <chrono>
 #include <iostream>
 #include <random>
 #include <string>
@@ -23,9 +25,18 @@ using std::accumulate;
 using std::pair;
 using std::make_pair;
 
+using std::chrono::time_point;
+using std::chrono::steady_clock;
+
+typedef Eigen::SparseMatrix<size_t> SparseCountMatrix;
+
 template<class T>
-static vector<vector<T>> build2DVector(size_t x_dim, size_t y_dim) {
-  return vector<vector<T>>(x_dim, vector<T>(y_dim));
+static vector<vector<T>> build2DVector(size_t xDim, size_t yDim) {
+  return vector<vector<T>>(xDim, vector<T>(yDim));
+}
+
+static SparseCountMatrix buildSparseCountMatrix(size_t xDim, size_t yDim) {
+  return SparseCountMatrix(xDim, yDim);
 }
 
 }  // namespace fastlda

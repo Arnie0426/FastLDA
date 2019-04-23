@@ -28,13 +28,13 @@ void CGS_LDA::estimate(size_t numIterations, bool calcPerp) {
                 auto termId = docs_[d][n];
 
                 // ignore current count
-                CDK[d][topicId]--;
-                CKW[topicId][termId]--;
+                CDK.coeffRef(d, topicId)--;
+                CKW.coeffRef(topicId, termId)--;
                 CK[topicId]--;
 
                 for (auto k = 0; k < numTopics_; ++k) {
-                    probVector[k] = ((CDK[d][k] + alpha_) *
-                        (CKW[k][termId] + beta_)) / (CK[k] + vocSize_ * beta_);
+                    probVector[k] = ((CDK.coeff(d, k) + alpha_) *
+                        (CKW.coeff(k, termId) + beta_)) / (CK[k] + vocSize_ * beta_);
                 }
 
                 discrete_distribution<size_t> mult(probVector.begin(),
@@ -42,8 +42,8 @@ void CGS_LDA::estimate(size_t numIterations, bool calcPerp) {
 
                 topicId = mult(generator);
                 Z[d][n] = topicId;
-                CDK[d][topicId]++;
-                CKW[topicId][termId]++;
+                CDK.coeffRef(d, topicId)++;
+                CKW.coeffRef(topicId, termId)++;
                 CK[topicId]++;
             }
         }

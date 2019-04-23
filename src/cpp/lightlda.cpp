@@ -21,7 +21,7 @@ void LightLDA::buildAliasTables() {
     for (auto w = 0; w < vocSize_; ++w) {
         buildTermAliasTable(w);
         for (auto k = 0; k < numTopics_; ++k) {
-            termSum += CKW[k][w] / (CK[k] + vocSize_ * beta_);
+            termSum += CKW.coeff(k, w) / (CK[k] + vocSize_ * beta_);
         }
     }
     for (size_t k = 0; k < numTopics_; ++k) {
@@ -42,7 +42,7 @@ void LightLDA::buildBetaAliasTable() {
 void LightLDA::buildTermAliasTable(size_t w) {
     vector<float> p(numTopics_);
     for (auto k = 0; k < numTopics_; ++k) {
-        p[k] = CKW[k][w] / (CK[k] + vocSize_ * beta_);
+        p[k] = CKW.coeff(k, w) / (CK[k] + vocSize_ * beta_);
     }
     AliasTable termAliasTable(p);
     for (auto k = 0; k < numTopics_; ++k) {
@@ -77,8 +77,8 @@ void LightLDA::estimate(size_t numIterations, size_t numMHSteps,
                     float accept = 0.0;
 
                     // ignore current count
-                    CDK[d][topicId]--;
-                    CKW[topicId][termId]--;
+                    CDK.coeffRef(d, topicId)--;
+                    CKW.coeffRef(topicId, termId)--;
                     CK[topicId]--;
 
                     uniform_int_distribution<> coin(0, 1);  // coin flip
@@ -92,14 +92,14 @@ void LightLDA::estimate(size_t numIterations, size_t numMHSteps,
                             proposedTopic = uniformTopic(generator);
                         }
                         // MH Probability
-                        accept = (CKW[proposedTopic][termId] + beta_)
-                                 / (CKW[topicId][termId] + beta_);
+                        accept = (CKW.coeff(proposedTopic, termId) + beta_)
+                                 / (CKW.coeff(topicId, termId) + beta_);
                         accept *= (CK[topicId] + vocSize_ * beta_)
                                   / (CK[proposedTopic] + vocSize_ * beta_);
-                        accept *= (CDK[d][proposedTopic] + alpha_)
-                                  / (CDK[d][topicId] + alpha_);
-                        accept *= (CDK[d][topicId] + alpha_ + 1)
-                                  / (CDK[d][proposedTopic] + alpha_ + 1);
+                        accept *= (CDK.coeff(d, proposedTopic) + alpha_)
+                                  / (CDK.coeff(d, topicId) + alpha_);
+                        accept *= (CDK.coeff(d, topicId) + alpha_ + 1)
+                                  / (CDK.coeff(d, proposedTopic) + alpha_ + 1);
                     } else {
                         if (sampleCounts[vocSize_] >= numTopics_) {
                             buildBetaAliasTable();
@@ -118,14 +118,14 @@ void LightLDA::estimate(size_t numIterations, size_t numMHSteps,
                             proposedTopic = termSamples[termId][sample];
                             sampleCounts[termId]++;
                         }
-                        accept = (CDK[d][proposedTopic] + alpha_)
-                                 / (CDK[d][topicId] + alpha_);
-                        accept *= (CKW[proposedTopic][termId] + beta_)
-                                  / (CKW[topicId][termId] + beta_);
+                        accept = (CDK.coeff(d, proposedTopic) + alpha_)
+                                 / (CDK.coeff(d, topicId) + alpha_);
+                        accept *= (CKW.coeff(proposedTopic, termId) + beta_)
+                                  / (CKW.coeff(topicId, termId) + beta_);
                         accept *= (CK[topicId] + vocSize_ * beta_)
                                   / (CK[proposedTopic] + vocSize_ * beta_);
-                        accept *= (CKW[topicId][termId] + beta_ + 1)
-                                  / (CKW[proposedTopic][termId] + beta_ + 1);
+                        accept *= (CKW.coeff(topicId, termId) + beta_ + 1)
+                                  / (CKW.coeff(proposedTopic, termId) + beta_ + 1);
                         accept *= (CK[proposedTopic] + 1 + vocSize_ * beta_)
                                   / (CK[topicId] + 1 + vocSize_ * beta_);
                     }
@@ -137,13 +137,13 @@ void LightLDA::estimate(size_t numIterations, size_t numMHSteps,
                         betaSum -= (beta_ / (CK[topicId] + vocSize_ * beta_));
                         betaSum += (beta_
                                     / (CK[proposedTopic] + vocSize_ * beta_));
-                        termSum -= (CKW[topicId][termId]
+                        termSum -= (CKW.coeff(topicId, termId)
                                    / (CK[topicId] + vocSize_ * beta_));
-                        termSum += (CKW[proposedTopic][termId]
+                        termSum += (CKW.coeff(proposedTopic, termId)
                                    / (CK[proposedTopic] + vocSize_ * beta_));
                     }
-                    CDK[d][proposedTopic]++;
-                    CKW[proposedTopic][termId]++;
+                    CDK.coeffRef(d, proposedTopic)++;
+                    CKW.coeffRef(proposedTopic, termId)++;
                     CK[proposedTopic]++;
                     Z[d][n] = proposedTopic;
                 }

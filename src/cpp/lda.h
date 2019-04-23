@@ -18,8 +18,8 @@ class LDA {
     size_t totalNumOfWords_;
     // Count matrices
     vector<vector<size_t>> Z;
-    vector<vector<size_t>> CDK;
-    vector<vector<size_t>> CKW;
+    SparseCountMatrix CDK;
+    SparseCountMatrix CKW;
     vector<size_t> CK;
 
  public:
@@ -30,8 +30,8 @@ class LDA {
     float calculatePerplexity();
     vector<vector<float>> getTopicTermMatrix() const;
     vector<vector<float>> getDocTopicMatrix() const;
-    vector<vector<size_t>> getSparseTopicTermMatrix() const;
-    vector<vector<size_t>> getSparseDocTopicMatrix() const;
+    SparseCountMatrix getSparseTopicTermMatrix() const;
+    SparseCountMatrix getSparseDocTopicMatrix() const;
     vector<size_t> getTopicCountMatrix() const;
 };
 }  // namespace fastlda
